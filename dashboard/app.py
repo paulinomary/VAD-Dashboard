@@ -7,9 +7,8 @@ external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div([
-    html.Div(className='sidenav', children=[
-        html.Div(className='sidenav-header', children=''),
-        html.A('Home', href='/', className='active'),
+    html.Nav(className='sidenav', children=[
+        html.A(html.Img(src='./assets/components/Mini Logo branco.png', className='logo'), href='/'),
         html.A('Basic', href='basic'),
         html.A('Advanced', href='advanced'),
         html.A('About Us', href='about-us'),

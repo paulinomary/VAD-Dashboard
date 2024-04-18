@@ -1,8 +1,8 @@
 /* styles.css */
-/* Height vh, Width vw */
+
 .sidenav {
   height: 100%;
-  width: 16vw;
+  width: 18vw;
   position: fixed;
   top: 0;
   left: 0;
@@ -15,65 +15,13 @@
 }
 
 .sidenav-header {
-  text-align: center;
-  margin-bottom: 2vh;
-}
-
-.sidenav a {
-  padding: 2vh;
-  text-decoration: none;
-  font-size: 1rem;
-  color: #030B11;
-  display: block;
-  border-radius: 50px;
-  background-color: #F9D29F;
-  margin-bottom: 2vh; 
-  width: 13vw;
-  text-align: center;
-}
-
-.sidenav a:first-child {
-  margin-top: 2vh; 
-  width: 10vw;
-  font-size: 0.75rem;
-  padding: 2vh;
-}
-
-.sidenav a:last-child {
-  margin-bottom: 2vh; 
-  width: 10vw;
-  font-size: 0.75rem;
-  padding: 2vh;
-}
-
-
-.sidenav a:hover {
-  background-color: #EBA74C;
-}
-
-.content {
-  margin-left: 30vh;
-  padding: 1vh;
-}
-/* styles.css */
-/* Height vh, Width vw */
-.sidenav {
-  height: 100%;
-  width: 18vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: #1865A5;
-  padding-top: 13vh;
-  border-radius: 0 25px 25px 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-}
-
-.sidenav-header {
-  text-align: center;
-  margin-bottom: 18vh;
+  margin-left: 0;
+  margin-top: 1vh;
+  margin-right: 0;
+  margin-bottom: 5vh;
+  width: 100%;
 }
 
 .sidenav a {
@@ -85,23 +33,46 @@
   border-radius: 50px;
   background-color: #F9D29F;
   margin-bottom: 8vh;
-  width: 13vw;
+  width: 15vw;
   text-align: center;
 }
 
-.sidenav a:last-child {
-  margin-top: auto; 
-  margin-bottom: 15vh; 
-  width: 10vw;
+.sidenav a:first-child {
+  margin-top: 1vh; 
+  margin-bottom: 20vh; 
+  width: auto;
   font-size: 0.8rem;
-  padding: 2vh;
+  padding: 1vh;
+  background-color: transparent;
+  
 }
 
-.sidenav a:hover {
+.sidenav a:last-child {
+  margin-bottom: 18vh;
+  margin-top: 5vh;
+  font-size: 0.9rem;
+  width: 7vw;
+}
+
+.sidenav a:nth-child(2):hover { 
+  background-color: #EBA74C;
+}
+
+.sidenav a:nth-child(3):hover {
+  background-color: #EBA74C;
+}
+
+.sidenav a:nth-child(4):hover {
   background-color: #EBA74C;
 }
 
 .content {
   margin-left: 30vw;
   padding: 3vw;
+}
+
+.logo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
