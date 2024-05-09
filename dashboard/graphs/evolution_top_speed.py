@@ -51,10 +51,15 @@ text = {
 
 fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, coloraxis_showscale=False)
 
-app.layout = html.Div(style={'font-family': text['font_family']}, children=[
+app.layout = html.Div(id='page-content', style={'font-family': text['font_family']}, children=[
     html.H4('Top Speed Evolution by Year and Brand'),
     dcc.Graph(id="graph", figure=fig)
 ])
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+page1_layout = html.Div(id='page-content', style={'font-family': text['font_family']}, children=[
+    html.H4('Top Speed Evolution by Year and Brand'),
+    dcc.Graph(id="graph", figure=fig)
+])
+
+# if __name__ == '__main__':
+#     app.run_server(debug=True)

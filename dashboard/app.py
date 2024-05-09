@@ -32,6 +32,7 @@ app.layout = html.Div(
 )
 
 # Callback to dynamically update page content based on URL
+URL_pathname = app.config.requests_pathname_prefix
 @app.callback(
     Output(component_id='page-content', component_property='children'),
     Input(component_id=URL_pathname, component_property='pathname')
@@ -43,7 +44,7 @@ def update_page_content(pathname):
   return html.Div(children="Page not found")  # Default for invalid URL
 
 # ... (Replace with your page layout imports from pages folder)
-from pages import page1_layout, page2_layout, etc.  # Replace with actual imports
+#from pages import page1_layout, page2_layout #, etc.  # Replace with actual imports
 
 # Additional app initialization (if any)
 
