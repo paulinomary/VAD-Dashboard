@@ -14,21 +14,13 @@ app.layout = html.Div([
         html.A('Advanced', href='advanced'),
         html.A('About Us', href='about-us'),
     ]),
-    html.Div(className='content', children=[
-        html.H2('Content Area'),
-        dcc.Graph(
-            id='example-graph',
-            figure={
-                'data': [
-                    {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                    {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-                ],
-                'layout': {
-                    'title': 'Dash Data Visualization'
-                }
-            }
-        )
-    ])
+    html.Div(className='content',
+             #Insert logo in the center of the page
+             children=[
+				 html.Img(src='./assets/components/Logo.png', className='center'),
+				 html.H1('Welcome to our Dashboard'),
+				 html.P('This is a simple dashboard example using Dash and Plotly.')
+			 ])
 ])
 ])
 if __name__ == '__main__':
