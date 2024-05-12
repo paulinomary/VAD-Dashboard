@@ -14,16 +14,6 @@
   align-items: center;
 }
 
-.sidenav-header {
-  display: flex;
-  align-items: center;
-  margin-left: 0;
-  margin-top: 1vh;
-  margin-right: 0;
-  margin-bottom: 5vh;
-  width: 100%;
-}
-
 .sidenav a {
   padding: 2vh;
   text-decoration: none;
@@ -66,9 +56,12 @@
   background-color: #EBA74C;
 }
 
+#_pages_content {
+  margin-left: 0vw;
+}
+
 .content {
-  margin-left: 45vw;
-  padding: 3vw;
+  padding: auto;
 }
 
 .logo {
