@@ -1,12 +1,15 @@
 import pandas as pd
 import plotly.express as px
-from dash import Dash, dcc, html, Input, Output
+import dash
+from dash import dcc, html, Input, Output
 import os
 
-app = Dash(__name__)
+
+dash.register_page(__name__, path='/evolution_top_speed')
+
 
 # Sample data
-evolution_top_speed = pd.read_csv('../dataset/evolution_top_speed.csv')
+evolution_top_speed = pd.read_csv('dataset/evolution_top_speed.csv')
 
 line_colors = ['#1865A5', '#76C1EF', '#f9d29f', '#EBA74C', '#DE3F47','#950E3F']
 # color dict
@@ -30,7 +33,7 @@ fig = px.line(filtered_evolution_top_speed,
                 title='Mean top speed by brand',
                 color='Company',
                 color_discrete_sequence=line_colors,
-                width=1200,
+                width=900,
                 height=900,
                 )
 
@@ -51,15 +54,7 @@ text = {
 
 fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0}, coloraxis_showscale=False)
 
-app.layout = html.Div(id='page-content', style={'font-family': text['font_family']}, children=[
+layout = html.Div(id='page-content', style={'font-family': text['font_family']}, children=[
     html.H4('Top Speed Evolution by Year and Brand'),
     dcc.Graph(id="graph", figure=fig)
 ])
-
-# page1_layout = html.Div(id='page-content', style={'font-family': text['font_family']}, children=[
-#     html.H4('Top Speed Evolution by Year and Brand'),
-#     dcc.Graph(id="graph", figure=fig)
-# ])
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
