@@ -1,6 +1,7 @@
 import dash
-from dash import dcc
-from dash import html
+import dash_core_components as dcc
+import dash_html_components as html
+
 external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css', 'assets/css/styles.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, use_pages=True)
 
