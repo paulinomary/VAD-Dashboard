@@ -1,5 +1,3 @@
-/* styles.css */
-
 .sidenav {
   height: 100%;
   width: 18vw;
@@ -25,6 +23,7 @@
   margin-bottom: 8vh;
   width: 15vw;
   text-align: center;
+  font-family: 'Aspira';
 }
 
 .sidenav a:first-child {
@@ -34,7 +33,6 @@
   font-size: 0.8rem;
   padding: 1vh;
   background-color: transparent;
-  
 }
 
 .sidenav a:last-child {
@@ -42,7 +40,6 @@
   margin-top: 5vh;
   font-size: 0.9rem;
   width: 7vw;
-
 }
 
 .sidenav a:nth-child(2):hover { 
@@ -73,4 +70,138 @@
   width: 100%;
   max-width: 100%;
   height: auto;
+}
+
+.text {
+  color: #1865A5;
+  font-weight: 1000;
+  font-size: 3rem;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  font-family: 'Aspira';
+  background-color: #F9D29F;
+  text-align: center;
+  padding: 1vh;
+  margin-left: 7vw;
+  margin-right: 7vw;
+  border-radius: 25px;
+}
+
+.about-us-title {
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+}
+
+.img-Mariana {
+  width: 25%;
+  max-width: 25%;
+  height: auto;
+  transition: transform 0.5s ease;
+  position: relative;
+  background-color: #F9D29F;
+}
+
+.img-Alex {
+  width: 25%;
+  max-width: 25%;
+  height: auto;
+  transition: transform 0.5s ease;
+  position: flex;
+  background-color: #F9D29F;
+}
+
+.img-Mariana, .img-Alex {
+  border-radius: 50%;
+}
+
+.img-Alex:hover, .img-Mariana:hover {
+}
+
+.front-Alex, .front-Mary {
+  display: flex;
+  flex-direction: row;
+  /*align-items: center;*/
+  justify-content: center;
+  position: relative;
+}
+
+.front-Alex {
+  align-items: right;
+  justify-content: right;
+}
+
+.front-Mary {
+  align-items: left;
+  justify-content: left;
+}
+
+.back-text-Alex {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  border-radius: 50%;
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Align name to bottom */
+  font-family: 'Palatino';
+  z-index: 1; /* Ensure text is above */
+  color: white;
+}
+
+.back-text-Mary {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  border-radius: 50%;
+  width: 25%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Align name to bottom */
+  font-family: 'Palatino';
+  z-index: 1; /* Ensure text is above */
+  color: black;
+}
+
+.front-Alex:hover .back-text-Alex { 
+  opacity: 1;
+  background-color: #950F37;
+}
+
+.front-Mary:hover .back-text-Mary { 
+  opacity: 1;
+  background-color: #76C1EF;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.github {
+  width: 5vw;
+  max-width: 5vw;
+  height: auto;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
+
+.github-logo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.about-us-text {
+  font-family: 'Aspira';
+  font-size: 1rem;
+  text-align: center;
+  padding: 0.5vh;
+  margin-left: 7vw;
+  margin-right: 7vw;
+
 }
