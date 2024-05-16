@@ -10,7 +10,6 @@ app.layout = html.Div([
         html.A(html.Img(src='./assets/components/Mini Logo branco.png', className='logo'), href='/'),
         html.A('Basic', href='basic'),
         html.A('Advanced', href='advanced'),
-        html.A('Evolution Top Speed', href='evolution_top_speed'),
         html.A('About Us', href='about-us'),
     ]),
     dash.page_container,
