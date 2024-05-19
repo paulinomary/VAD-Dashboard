@@ -120,8 +120,8 @@
 .front-Alex, .front-Mary {
   display: flex;
   flex-direction: row;
-  /*align-items: center;*/
-  justify-content: center;
+  align-items: center;
+
   position: relative;
 }
 
