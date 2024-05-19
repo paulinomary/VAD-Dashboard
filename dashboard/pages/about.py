@@ -40,15 +40,17 @@ layout = html.Div(
                         ]),
                         
                     ]),
-                    html.Div(className="front-Alex", children=[
-                        html.Img(id='img-Alex', src='./assets/components/Alex.jpeg', className='img-Alex'),
-                        html.Div(className="back-text-Alex", children= [
-                            html.P('Alexandre Tapadinhas, 2018283200'),
-                            html.A(href='https://github.com/AlexandreTapadinhas', className='github', target='_blank', children=[
-                                html.Img(src='./assets/components/git-white.png', className='github-logo')
+                    html.Section(className="Alex", children=[
+                        html.Div(className="front-Alex", children=[
+                            html.Img(id='img-Alex', src='./assets/components/Alex.jpeg', className='img-Alex'),
+                            html.Div(className="back-text-Alex", children= [
+                                html.P('Alexandre Tapadinhas, 2018283200'),
+                                html.A(href='https://github.com/AlexandreTapadinhas', className='github', target='_blank', children=[
+                                    html.Img(src='./assets/components/git-white.png', className='github-logo')
                             ]),
                         ]),
                     ]),
-                ])
+                ]),
+            ]),
             ]),
 ])

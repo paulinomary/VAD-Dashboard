@@ -1,74 +1,55 @@
-.sidenav {
-  height: 100%;
-  width: 18vw;
-  position: fixed;
-  top: 0;
-  left: 0;
+/* styles.css */
+.navbar {
+  width: 100%;
   background-color: #1865A5;
-  padding-top: 5vh;
-  border-radius: 0 25px 25px 0;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: left;
+  justify-content: space-between;
+  position: fixed;
+  z-index: 1;
 }
 
-.sidenav a {
-  padding: 2vh;
+.navbar a {
   text-decoration: none;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #030B11;
   display: block;
   border-radius: 50px;
   background-color: #F9D29F;
-  margin-bottom: 8vh;
-  width: 15vw;
   text-align: center;
   font-family: 'Aspira';
+  padding: 1.5vh 2vw;
 }
 
-.sidenav a:first-child {
-  margin-top: 1vh; 
-  margin-bottom: 20vh; 
-  width: auto;
-  font-size: 0.8rem;
-  padding: 1vh;
-  background-color: transparent;
-}
-
-.sidenav a:last-child {
-  margin-bottom: 18vh;
-  margin-top: 5vh;
-  font-size: 0.9rem;
-  width: 7vw;
-}
-
-.sidenav a:nth-child(2):hover { 
+.navbar a:hover {
   background-color: #EBA74C;
 }
 
-.sidenav a:nth-child(3):hover {
+.navbar :first-child {
+  background-color: transparent !important; /* Remove background color */
+  margin-left: 0vw;
+  padding: 0;
+}
+
+.navbar :first-child:hover {
+  background-color: transparent !important; /* Remove hover effect */
+}
+
+.navbar :last-child {
   background-color: #EBA74C;
 }
 
-.sidenav a:nth-child(4):hover {
-  background-color: #EBA74C;
-}
-
-.sidenav a:nth-child(5):hover {
-  background-color: #EBA74C;
-}
-
-#_pages_content {
-  margin-left: 20vw;
+.navbar :last-child:hover {
+  background-color: #F9D29F;
 }
 
 .content {
-  padding: auto;
+  padding-top: 15vh; /* To ensure content is not hidden behind the navbar */
 }
 
 .logo {
-  width: 100%;
-  max-width: 100%;
+  max-width: 40%;
   height: auto;
 }
 
@@ -76,15 +57,13 @@
   color: #1865A5;
   font-weight: 1000;
   font-size: 3rem;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
+  margin: 5vh auto;
   font-family: 'Aspira';
   background-color: #F9D29F;
   text-align: center;
   padding: 1vh;
-  margin-left: 7vw;
-  margin-right: 7vw;
   border-radius: 25px;
+  max-width: 90%;
 }
 
 .about-us-title {
@@ -177,6 +156,7 @@
   background-color: #76C1EF;
 }
 
+
 p {
   margin-top: 0;
   margin-bottom: 0;
@@ -186,8 +166,7 @@ p {
   width: 5vw;
   max-width: 5vw;
   height: auto;
-  margin-top: 2vh;
-  margin-bottom: 2vh;
+  margin: 2vh auto;
 }
 
 .github-logo {
@@ -201,7 +180,23 @@ p {
   font-size: 1rem;
   text-align: center;
   padding: 0.5vh;
-  margin-left: 7vw;
-  margin-right: 7vw;
+  max-width: 90%;
+  margin: auto;
+}
 
+#brand-dropdown {
+  max-width: 90%;
+  margin: 2vh auto;
+  font-family: 'Aspira';
+  font-size: 1rem;
+  background-color: #F9D29F;
+  border-radius: 25px;
+  padding: 1vh;
+  display: block;
+}
+
+#graph1 {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
