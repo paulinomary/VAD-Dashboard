@@ -6,7 +6,7 @@ from dash import dcc, html, Input, Output, callback
 import re
 import numpy as np
 
-dash.register_page(__name__, path='/advanced')
+dash.register_page(__name__, path='/car-finder')
 
 all_cars = pd.read_csv('dataset/cars_named.csv')
 

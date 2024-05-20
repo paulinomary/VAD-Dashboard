@@ -7,8 +7,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, use_pages=T
 app.layout = html.Div([
     html.Nav(className='navbar', children=[
         html.A(html.Img(src='./assets/components/Mini Logo branco.png', className='logo'), href='/'),
-        html.A('Basic', href='/basic'),
-        html.A('Advanced', href='/advanced'),
+        html.A('General Knowledge', href='/general-knowledge'),
+        html.A('Car Comparison', href='/car-comparison'),
+        html.A('Car Finder', href='/car-finder'),
         html.A('About Us', href='/about-us'),
     ]),
     html.Div(className='content', children=dash.page_container)

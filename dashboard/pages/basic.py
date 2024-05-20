@@ -12,7 +12,7 @@ from PIL import Image  # For Solution 2
 import tempfile  # For Solution 2
 
 # Register Dash page
-dash.register_page(__name__, path='/basic')
+dash.register_page(__name__, path='/general-knowledge')
 
 aspira_font_path = 'assets/fonts/Aspira Heavy.otf'
 palatino_font_path = 'assets/fonts/Palatino.ttf'
