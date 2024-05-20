@@ -1,6 +1,6 @@
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
 import dash
 from dash import dcc, html, Input, Output, callback
 from plotly.subplots import make_subplots
@@ -147,7 +147,7 @@ fuel_options = [
     {'label': 'Plug-in Hybrid', 'value': 'Plug-in Hybrid'},
     {'label': 'Ethanol', 'value': 'Ethanol'},
     {'label': 'Hybrid Diesel', 'value': 'Hybrid Diesel'},
-    {'label': 'Liquefied Petroleum Gas (LPG)', 'value': 'Liquefied Petroleum Gas (LPG)'},
+    {'label': 'Liquefied Petroleum Gas (LPG)', 'value': 'Liquefied Petroleum Gas (LPG)'}
 ]
 
 fuel_dropdown = dcc.Dropdown(
@@ -161,6 +161,9 @@ fuel_dropdown = dcc.Dropdown(
 
 # Define the power vs displacement graph
 cars['Displacement'] = cars['Displacement'].str.extract(r'(\d+)').astype(float)
+#Transform the Top Speed from mph to kmh
+cars['Top Speed'] = cars['Top Speed'].str.extract(r'(\d+)').astype(float)
+cars['Top Speed'] = cars['Top Speed'] * 1.60934
 def generate_power_displacement_graph(selected_brands, selected_fuel):
     if selected_brands is None or len(selected_brands) == 0:
         return go.Figure()
@@ -182,6 +185,25 @@ def generate_power_displacement_graph(selected_brands, selected_fuel):
 
 all_brands = sorted(cars['Company'].unique())
 
+def generate_power_top_speed(selected_brands, selected_fuel):
+    if selected_brands is None or len(selected_brands) == 0:
+        return go.Figure()
+
+    # Filter the dataframe based on selected brands and fuel
+    cars_filtered = cars[(cars['Fuel'] == selected_fuel) & (cars['Company'].isin(selected_brands))]
+    
+    # Update fig6 (Power vs Top Speed)
+    fig6 = px.scatter(cars_filtered,
+                      y='Top Speed',
+                      x='HP',
+                      color='Company',
+                      color_discrete_sequence=line_colors,
+                      hover_name="Model",
+                      hover_data=['Company', 'Production years', 'Specification summary'],
+                      height=400)
+
+    return fig6
+
 # Define the dropdown for selecting the graph type
 graph_dropdown = dcc.Dropdown(
     id='graph-dropdown',
@@ -189,6 +211,7 @@ graph_dropdown = dcc.Dropdown(
         {'label': 'Top Speed Evolution', 'value': 'top_speed'},
         {'label': 'Mean HP Evolution', 'value': 'mean_hp'},
         {'label': 'Power vs Displacement', 'value': 'power_displacement'},
+        {'label': 'Power vs Top Speed', 'value': 'power_top_speed'}
     ],
     value='top_speed',  # Default value
     clearable=False,  # Disable clear option
@@ -228,24 +251,30 @@ layout = html.Div(id='page-content', style={'font-family': 'Palatino'}, children
     ], style={'clear': 'both', 'text-align': 'center', 'height': '300px', 'margin-top': '20px'}),
 ])
 
-
-
 # Update callback for graph content
 @callback(
     Output('graph-content', 'children'),
-    [Input('graph-dropdown', 'value')]
+    [Input('graph-dropdown', 'value'),
+     Input('brand-dropdown', 'value')]  # Add brand-dropdown as an input
 )
-def update_graph_content(selected_graph):
+def update_graph_content(selected_graph, selected_brands):
     if selected_graph == 'top_speed':
-        return dcc.Graph(id="graph1", figure=fig1)
+        return dcc.Graph(id="top-speed-graph", figure=fig1)
     elif selected_graph == 'mean_hp':
-        return dcc.Graph(id='mean-hp-graph', figure=fig5)
+        return dcc.Graph(id='mean-hp-graph', figure=update_mean_top_speed_graph(selected_brands))  # Correct the function name
     elif selected_graph == 'power_displacement':
         return html.Div([
             html.H6('Choose the Fuel you would like to Analyse:'),
             dcc.Dropdown(id='fuel-dropdown', options=fuel_options, value='Gasoline', clearable=False),
-            dcc.Graph(id='power-displacement-graph', figure=generate_power_displacement_graph(brands_filter, 'Gasoline'))
+            dcc.Graph(id='power-displacement-graph', figure=generate_power_displacement_graph(selected_brands, 'Gasoline'))
         ])
+    elif selected_graph == 'power_top_speed':
+        return html.Div([
+            html.H6('Choose the Fuel you would like to Analyse:'),
+            dcc.Dropdown(id='fuel-dropdown', options=fuel_options, value='Gasoline', clearable=False),
+            dcc.Graph(id='power-top-speed', figure=generate_power_top_speed(selected_brands, 'Gasoline'))
+        ])
+
 
 
 # Callbacks
@@ -297,6 +326,37 @@ def update_power_displacement(selected_brands, selected_fuel):
     return generate_power_displacement_graph(selected_brands, selected_fuel)
 
 # Update Mean HP by Brand callback
+# Update the update_mean_hp_graph function to correctly filter the data
+# Update the callback function name and correct the function to update the mean top speed graph
+@callback(
+    Output('top-speed-graph', 'figure'),
+    [Input('brand-dropdown', 'value')]
+)
+def update_mean_top_speed_graph(selected_brands):
+    # Filter data based on selected brands
+    filtered_evolution_top_speed = evolution_top_speed[evolution_top_speed['Company'].isin(selected_brands)]
+    
+    # Create the figure
+    fig_mean_top_speed = go.Figure()
+    for brand, color in zip(selected_brands, line_colors):
+        data = filtered_evolution_top_speed[filtered_evolution_top_speed['Company'] == brand]
+        fig_mean_top_speed.add_trace(go.Scatter(
+            x=data['Year'],
+            y=data['Mean Top Speed km/h'],
+            mode='lines',
+            name=brand,
+            line=dict(color=color, width=4),
+        ))
+    fig_mean_top_speed.update_layout(
+        xaxis_title='Year',
+        yaxis_title='Mean Top Speed km/h',
+        font=dict(family='Aspira'),
+        xaxis=dict(range=[1920, 2024]),
+        xaxis_rangeslider_visible=True,
+        height=400,
+    )
+    return fig_mean_top_speed
+
 @callback(
     Output('mean-hp-graph', 'figure'),
     [Input('brand-dropdown', 'value')]
@@ -333,9 +393,14 @@ def update_power_displacement_graph(selected_brands, selected_fuel):
 
 # Update Top Speed Evolution by Year and Brand callback
 @callback(
-    Output('graph1', 'figure'),
-    [Input('brand-dropdown', 'value')]
+    Output('power-top-speed', 'figure'),
+    [Input('brand-dropdown', 'value'),
+     Input('fuel-dropdown', 'value')]
 )
+def update_power_top_speed(selected_brands, selected_fuel):
+    # Filter data based on selected brands and fuel type
+    return generate_power_top_speed(selected_brands, selected_fuel)
+
 def update_top_speed_evolution(selected_brands):
     # Filter data based on selected brands
     filtered_data = evolution_top_speed[evolution_top_speed['Company'].isin(selected_brands)]
@@ -359,5 +424,3 @@ def update_top_speed_evolution(selected_brands):
         height=400,
     )
     return updated_fig1
-
-
