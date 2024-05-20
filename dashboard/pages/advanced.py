@@ -72,6 +72,8 @@ all_cars['Combined consumption (L/100Km)'] = all_cars['Combined mpg'].apply(extr
 #print(all_cars['Production years'][0].split(', '))
 all_cars['Production years'] = all_cars['Production years'].apply(lambda x: x.split(', '))
 
+df_exploded = all_cars.explode('Production years')
+df_exploded['Production years'] = df_exploded['Production years'].astype(int)
 
 #all_cars.to_csv('cars_named.csv', index=False)
 
@@ -131,7 +133,7 @@ layout = html.Div(id='page-content', children=[
 
 # auxiliar var for the parallel coordinates plot brushing
 par_coords_dimensions_dict = {
-    0: 'Consumption (L/100Km)',
+    0: 'Combined consumption (L/100Km)',
     1: 'Num_cylinders',
     2: 'Displacement',
     3: 'Unladen Weight (kg)',
@@ -154,10 +156,10 @@ def update_parallel_coords(years):
         years_to_filter = list(range(years[0], years[1] + 1))
         #print(years_to_filter)
         #TODO: Prevent the explosion of the dataframe everytime the filter is used
-        df_exploded = all_cars.explode('Production years')
+        #df_exploded = all_cars.explode('Production years')
 
         # Step 2: Apply the filter
-        df_exploded['Production years'] = df_exploded['Production years'].astype(int)
+        #df_exploded['Production years'] = df_exploded['Production years'].astype(int)
         df_filtered = df_exploded[df_exploded['Production years'].isin(years_to_filter)]
 
         # Step 3: (Optional) Group back if needed, to get lists of years again
@@ -195,7 +197,7 @@ def update_parallel_coords(years):
 
 def update_scatter(restyleData, years):
     if years is None:
-        filtered_cars = all_cars
+        years_filtered_cars = all_cars
     else:
         years_to_filter = list(range(years[0], years[1] + 1))
         #print(years_to_filter)
@@ -211,12 +213,12 @@ def update_scatter(restyleData, years):
 
         agg_dict.update({col: 'first' for col in df_filtered.columns if col not in ['Production years', 'Unnamed: 0']})
 
-        filtered_cars = df_filtered.groupby('Unnamed: 0').agg(agg_dict)#.reset_index()
+        years_filtered_cars = df_filtered.groupby('Unnamed: 0').agg(agg_dict)#.reset_index()
 
 
     print(restyleData)
     if restyleData is None:
-        filtered_cars = filtered_cars # from the year filter
+        filtered_cars = years_filtered_cars # from the year filter
     else:
         # Extracting indices of the selected data points
         print(restyleData)
@@ -231,7 +233,8 @@ def update_scatter(restyleData, years):
                 interval = v[0]
                 min_val = interval[0]
                 max_val = interval[1]
-                filtered_cars = filtered_cars[(filtered_cars[par_coords_dimensions_dict[int(num_dim)]] >= min_val) & (filtered_cars[par_coords_dimensions_dict[int(num_dim)]] <= max_val)]
+                print('min =', min_val, '\nmax =', max_val, '\ncolumn = ', par_coords_dimensions_dict[int(num_dim)])
+                filtered_cars = years_filtered_cars[(years_filtered_cars[par_coords_dimensions_dict[int(num_dim)]] >= min_val) & (years_filtered_cars[par_coords_dimensions_dict[int(num_dim)]] <= max_val)]
                 
 
 
