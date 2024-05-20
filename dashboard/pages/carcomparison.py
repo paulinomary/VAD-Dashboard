@@ -5,7 +5,7 @@ import dash
 from dash import dcc, html, Input, Output, callback
 from plotly.subplots import make_subplots
 
-dash.register_page(__name__, path='/car-comparison')
+#dash.register_page(__name__, path='/car-comparison')
 
 aspira_font_path = 'assets/fonts/Aspira Heavy.otf'
 palatino_font_path = 'assets/fonts/Palatino.ttf'

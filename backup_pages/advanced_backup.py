@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 
-dash.register_page(__name__, path='/car-finder')
+#dash.register_page(__name__, path='/car-finder')
 
 all_cars = pd.read_csv('dataset/cars_named.csv')
 
@@ -76,8 +76,7 @@ def make_radar_chart(name, metrics, categories):
         r=metrics + metrics[:1],
         theta=categories + [categories[0]],
         fill='toself',
-        name=name,
-        line=dict(color='#DE3F47')
+        name=name
     ))
 
     fig.update_layout(
@@ -86,21 +85,11 @@ def make_radar_chart(name, metrics, categories):
                 visible=True,
                 range=[-2,2]
             )),
-        showlegend=False,
+        showlegend=True,
         title=name
     )
     return fig
 
-def generate_radar_charts(cars_data, max_charts=100):
-    charts = []
-    num_charts = min(len(cars_data), max_charts)
-    for i in range(num_charts):
-        car_data = cars_data.iloc[i]
-        name = car_data['Name']
-        metrics = car_data[['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist()
-        chart = dcc.Graph(figure=make_radar_chart(name, metrics, ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']))
-        charts.append(html.Div(chart, style={'display': 'inline-block', 'width': '30%'}))
-    return html.Div(charts, style={'display': 'flex', 'flex-wrap': 'wrap'})
 
 
 # Apply the function to the 'text' column
@@ -187,7 +176,11 @@ layout = html.Div(id='page-content', children=[
     ),
     dcc.Graph(id="parallel_coords", figure=fig),
     dcc.Graph(id="scatter_test", figure=scatter_fig),
-    html.Div(id="radar_charts")
+    # miniature multiplot with radar charts of each car
+
+    #dcc.Graph(id="radar", figure=make_radar_chart('Car 1', [5, 6, 7, 8, 9], ['A', 'B', 'C', 'D', 'E'])),
+
+    dcc.Graph(id="radar", figure=make_radar_chart(all_cars_norm['Name'].iloc[0], all_cars_norm.iloc[0][['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist(), ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)'])),
 
 ])
 
@@ -303,7 +296,7 @@ def update_scatter(restyleData, years):
 
 
 @callback(
-    Output('radar_charts', 'children'),
+    Output('radar', 'figure'),
     Input('parallel_coords', 'restyleData'),
     Input('start-year-dropdown', 'value')
 )
@@ -352,4 +345,8 @@ def update_radar(restyleData, years):
                 all_cars_norm_filtered = all_cars_norm[all_cars_norm['Unnamed: 0'].isin(filtered_cars['Unnamed: 0'])]
 
 
-    return generate_radar_charts(all_cars_norm[all_cars_norm['Unnamed: 0'].isin(filtered_cars['Unnamed: 0'])])
+
+    # Create a scatter plot based on the filtered 
+    print(all_cars_norm_filtered.shape)
+    radar_chart = make_radar_chart(all_cars_norm_filtered['Name'].iloc[0], all_cars_norm_filtered.iloc[0][['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist(), ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)'])
+    return radar_chart
