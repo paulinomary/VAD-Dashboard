@@ -155,7 +155,7 @@ def update_parallel_coords(years):
     fig = go.Figure()
     fig.add_trace(
         go.Parcoords(
-            #line=dict(color=filtered_cars['HP'], colorscale='Viridis', showscale=True),
+            line=dict(color=filtered_cars['Combined consumption (L/100Km)'], colorscale='Viridis', showscale=True),
             dimensions=[
                 dict(range=[0,40], label='Consumption (L/100Km)', values=filtered_cars['Combined consumption (L/100Km)']),
                 dict(range=[0,15], label='Cylinders', values=filtered_cars['Num_cylinders']),
