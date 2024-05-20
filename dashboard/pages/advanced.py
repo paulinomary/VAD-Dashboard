@@ -10,6 +10,10 @@ dash.register_page(__name__, path='/advanced')
 
 all_cars = pd.read_csv('dataset/cars_named.csv')
 
+RdBu = px.colors.sequential.RdBu
+BuRd = RdBu[::-1]
+
+
 def extract_number(text):
     if pd.isna(text):  # Check for NaN before applying regex
         return 0
@@ -59,6 +63,29 @@ def get_first_year(text):
     #print(match.group(0))
     return int(match.group(0)) if match else 0
 
+### RADAR CHARTS
+def make_radar_chart(name, metrics, categories):
+    fig = go.Figure()
+    fig.add_trace(go.Scatterpolar(
+        r=metrics + metrics[:1],  # Complete the loop
+        theta=categories + [categories[0]],  # Complete the loop
+        fill='toself',
+        name=name
+    ))
+
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, 10]
+            )),
+        showlegend=True,
+        title=name
+    )
+    return fig
+
+
+
 # Apply the function to the 'text' column
 
 all_cars['Num_cylinders'] = all_cars['Cylinders'].apply(extract_number)
@@ -96,11 +123,14 @@ fig = go.Figure()
 
 # max_hp = max(all_cars['HP'])
 # print(max_hp)
+first_row = all_cars[all_cars['Unnamed: 0'] == 0]
+print(first_row)
+print(first_row[['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']])
 
 
 fig.add_trace(
     go.Parcoords(
-        line=dict(color=all_cars['HP'], colorscale='Viridis', showscale=True),
+        line=dict(color=all_cars['HP'], colorscale=BuRd, showscale=True),
         dimensions=[
             dict(range=[0,40], label='Consumption (L/100Km)', values=all_cars['Combined consumption (L/100Km)']),
             dict(range=[0,15], label='Cylinders', values=all_cars['Num_cylinders']),
@@ -127,7 +157,11 @@ layout = html.Div(id='page-content', children=[
         tooltip={"placement": "bottom", "always_visible": True}
     ),
     dcc.Graph(id="parallel_coords", figure=fig),
-    dcc.Graph(id="scatter_test", figure=scatter_fig)
+    dcc.Graph(id="scatter_test", figure=scatter_fig),
+    # miniature multiplot with radar charts of each car
+
+    dcc.Graph(id="radar", figure=make_radar_chart('Car 1', [5, 6, 7, 8, 9], ['A', 'B', 'C', 'D', 'E'])),
+    dcc.Graph(id="radar", figure=make_radar_chart(all_cars['Name'].iloc[0], all_cars.iloc[0][['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist(), ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)'])),
 
 ])
 
@@ -175,7 +209,7 @@ def update_parallel_coords(years):
     fig = go.Figure()
     fig.add_trace(
         go.Parcoords(
-            line=dict(color=filtered_cars['Combined consumption (L/100Km)'], colorscale='Viridis', showscale=True),
+            line=dict(color=filtered_cars['Combined consumption (L/100Km)'], colorscale=BuRd, showscale=True),
             dimensions=[
                 dict(range=[0,40], label='Consumption (L/100Km)', values=filtered_cars['Combined consumption (L/100Km)']),
                 dict(range=[0,15], label='Cylinders', values=filtered_cars['Num_cylinders']),
