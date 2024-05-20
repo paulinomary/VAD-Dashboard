@@ -48,6 +48,7 @@ layout = html.Div(
                                 html.A(href='https://github.com/AlexandreTapadinhas', className='github', target='_blank', children=[
                                     html.Img(src='./assets/components/git-white.png', className='github-logo')
                             ]),
+                            
                         ]),
                     ]),
                 ]),
