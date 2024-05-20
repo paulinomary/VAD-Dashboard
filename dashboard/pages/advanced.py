@@ -19,8 +19,16 @@ def extract_number(text):
 def split_num(text):
     if pd.isna(text):  # Check for NaN before applying regex
         return 0.0
+    # if float raises an error, it means that the value is a string
+    try:
+        return float(text.split()[0])
+    except:
+        try:
+            return float(text.split()[0].replace(',', '.'))
+        except:
+            return 0.0
     
-    return text.split()[0]
+    #return float(text.split()[0])
 
 # Function to extract the weight in kg
 def extract_kg(text):
@@ -121,6 +129,16 @@ layout = html.Div(id='page-content', children=[
 
 ])
 
+# auxiliar var for the parallel coordinates plot brushing
+par_coords_dimensions_dict = {
+    0: 'Consumption (L/100Km)',
+    1: 'Num_cylinders',
+    2: 'Displacement',
+    3: 'Unladen Weight (kg)',
+    4: 'Acceleration 0-62 Mph (0-100 kph)',
+    5: 'HP'
+}
+
 # CALLBACKS
 
 @callback(
@@ -134,7 +152,7 @@ def update_parallel_coords(years):
         filtered_cars = all_cars
     else:
         years_to_filter = list(range(years[0], years[1] + 1))
-        print(years_to_filter)
+        #print(years_to_filter)
         #TODO: Prevent the explosion of the dataframe everytime the filter is used
         df_exploded = all_cars.explode('Production years')
 
@@ -171,16 +189,51 @@ def update_parallel_coords(years):
 
 @callback(
     Output('scatter_test', 'figure'),
-    Input('parallel_coords', 'restyleData')
+    Input('parallel_coords', 'restyleData'),
+    Input('start-year-dropdown', 'value')
 )
 
-def update_scatter(restyleData):
+def update_scatter(restyleData, years):
+    if years is None:
+        filtered_cars = all_cars
+    else:
+        years_to_filter = list(range(years[0], years[1] + 1))
+        #print(years_to_filter)
+        #TODO: Prevent the explosion of the dataframe everytime the filter is used
+        df_exploded = all_cars.explode('Production years')
+
+        # Step 2: Apply the filter
+        df_exploded['Production years'] = df_exploded['Production years'].astype(int)
+        df_filtered = df_exploded[df_exploded['Production years'].isin(years_to_filter)]
+
+        # Step 3: (Optional) Group back if needed, to get lists of years again
+        agg_dict = {'Production years': list}
+
+        agg_dict.update({col: 'first' for col in df_filtered.columns if col not in ['Production years', 'Unnamed: 0']})
+
+        filtered_cars = df_filtered.groupby('Unnamed: 0').agg(agg_dict)#.reset_index()
+
+
     print(restyleData)
     if restyleData is None:
-        filtered_cars = all_cars
+        filtered_cars = filtered_cars # from the year filter
     else:
         # Extracting indices of the selected data points
         print(restyleData)
+        print(type(restyleData[0]))
+        for k, v in restyleData[0].items():
+            num_dim = k.split('[')[1].split(']')[0]
+            if num_dim.isdigit():
+                print('dimension =', int(num_dim))
+                print('column name =', par_coords_dimensions_dict[int(num_dim)])
+                print('range = ', v)
+                print(type(v))
+                interval = v[0]
+                min_val = interval[0]
+                max_val = interval[1]
+                filtered_cars = filtered_cars[(filtered_cars[par_coords_dimensions_dict[int(num_dim)]] >= min_val) & (filtered_cars[par_coords_dimensions_dict[int(num_dim)]] <= max_val)]
+                
+
 
     # Create a scatter plot based on the filtered 
     #print(filtered_cars)
