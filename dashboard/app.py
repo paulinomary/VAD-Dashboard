@@ -2,7 +2,7 @@ import dash
 from dash import dcc, html  # Corrected imports for Dash 2.0 and above
 
 external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css', 'assets/css/styles.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, use_pages=True)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, use_pages=True, suppress_callback_exceptions=True)
 
 app.layout = html.Div([
     html.Nav(className='navbar', children=[

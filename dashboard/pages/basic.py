@@ -29,6 +29,7 @@ custom_colors = ['#1865A5', '#76C1EF', '#DE3F47', '#950E3F']
 
 # Define the initial 5 brands
 brands_filter = ['BMW', 'AUDI', 'MERCEDES BENZ', 'TOYOTA', 'FERRARI']
+brands = sorted(evolution_top_speed['Company'].unique())
 
 # Filter the top 10 brands with the most unique series
 unique_series = complete.groupby('Company')['Serie'].nunique().reset_index()
@@ -42,7 +43,7 @@ cars['HP'] = cars['HP'].astype(float)
 
 evolution_power_per_brand = pd.DataFrame()
 
-for i in range(1899, 2025):
+for i in range(1899, 2023):
     year_selected = i
     aux_evolution_power_per_brand = pd.DataFrame()
     aux_evolution_power_per_brand = cars[cars['Production years'].str.contains(str(year_selected))].groupby('Company')['HP'].mean()
@@ -53,7 +54,7 @@ for i in range(1899, 2025):
 
 # Prepare data for top manufacturers plot
 top_manufacturers = pd.DataFrame()
-for i in range(1899, 2025):
+for i in range(1899, 2023):
     year_selected = i
     aux_top = cars[cars['Production years'].str.contains(str(year_selected))].groupby('Company')['Serie'].nunique()
     aux_top = aux_top.reset_index()
@@ -71,13 +72,13 @@ fig1.add_trace(go.Scatter(
     x=filtered_evolution_top_speed['Year'],
     y=filtered_evolution_top_speed['Mean Top Speed km/h'],
     mode='lines',
-    line=dict(color=line_colors[0], width=4),
+    line=dict(color=line_colors[0], width=4)
 ))
 fig1.update_layout(
     xaxis_title='Year',
     yaxis_title='Mean Top Speed km/h',
     font=dict(family='Aspira'),  # Set font to Aspira
-    xaxis=dict(range=[1920, 2024]),
+    xaxis=dict(range=[1920, 2023]),
     xaxis_rangeslider_visible=True,
     height=400,
 )
@@ -87,14 +88,13 @@ top_manufacturers.rename(columns={'Serie': 'Models Produced'}, inplace=True)
 fig2 = px.bar(top_manufacturers,
               x='Models Produced',
               y='Company',
-              title='Top 10 manufacturers with the most unique series',
               color='Models Produced',
               color_continuous_scale=custom_colors,
               animation_frame='Year',
               animation_group='Company')
 fig2.update_layout(
     yaxis={'categoryorder': 'total ascending'},  # Sort bars by the number of series
-    height=600,
+    height=400,
     font=dict(family='Aspira')  # Set font to Aspira
 )
 
@@ -107,7 +107,6 @@ choropleth_fig = px.choropleth(df_counts,
                     locations='Country',
                     locationmode='country names',
                     color='Count',
-                    hover_name='Country',
                     color_continuous_scale=custom_colors,
                     labels={'Count': 'Number of Manufacturers'},
                     projection='natural earth',
@@ -122,7 +121,6 @@ filtered_evolution_power = evolution_power_per_brand[evolution_power_per_brand['
 fig5 = px.line(filtered_evolution_power,
                 x='Year',
                 y='Mean HP',
-                title='Mean HP by brand',
                 color='Company',
                 height=400,
                 color_discrete_sequence=line_colors
@@ -132,8 +130,7 @@ fig5 = px.line(filtered_evolution_power,
 fig5.update_traces(line=dict(width=4))
 fig5.update_layout(xaxis_title='Year',
                   yaxis_title='Mean HP',
-                  title='Mean HP by brand',
-                  xaxis=dict(range=[1920, 2024]),
+                  xaxis=dict(range=[1920, 2023]),
                   xaxis_rangeslider_visible=True,
                   font=dict(family='Aspira')  # Set font to Aspira
                   )
@@ -175,7 +172,6 @@ def generate_power_displacement_graph(selected_brands, selected_fuel):
     fig6 = px.scatter(cars_filtered,
                       x='Displacement',
                       y='HP',
-                      title='Power vs Displacement',
                       color='Company',
                       color_discrete_sequence=line_colors,
                       hover_name="Model",
@@ -184,93 +180,166 @@ def generate_power_displacement_graph(selected_brands, selected_fuel):
 
     return fig6
 
-# Create the initial layout
-layout = html.Div(id='page-content', style={'font-family': 'Palatino', 'margin-top': '50px'}, children=[
+all_brands = sorted(cars['Company'].unique())
+
+# Define the dropdown for selecting the graph type
+graph_dropdown = dcc.Dropdown(
+    id='graph-dropdown',
+    options=[
+        {'label': 'Top Speed Evolution', 'value': 'top_speed'},
+        {'label': 'Mean HP Evolution', 'value': 'mean_hp'},
+        {'label': 'Power vs Displacement', 'value': 'power_displacement'},
+    ],
+    value='top_speed',  # Default value
+    clearable=False,  # Disable clear option
+    persistence=True,  # Persist the selected values
+    persistence_type='local'  # Persist the selected values locally
+)
+
+# Update the layout to include the graph dropdown
+layout = html.Div(id='page-content', style={'font-family': 'Palatino'}, children=[
     html.Div([
-        dcc.Dropdown(
-            id='brand-dropdown',
-            options=[{'label': brand, 'value': brand} for brand in sorted(evolution_top_speed['Company'].unique())],
-            multi=True,
-            value=brands_filter,  # Set default to brands_filter
-            clearable=False,
-            persistence=True,
-            persistence_type='local'
-        ),
-    ]),
-    html.Div([
-        html.H4('Top Speed Evolution by Year and Brand'),
-        dcc.Graph(id="graph1", figure=fig1),
-    ]),
-    html.Div([
-        html.H4('Top Manufacturers'),
-        dcc.Graph(id="graph2", figure=fig2)
-    ]),
-    html.Div([
-        html.H4('Choropleth Map of Manufacturers'),
         html.Div([
+            html.H4('Count of Manufacturers per Country'),
             dcc.Graph(id='choropleth-map', figure=choropleth_fig),
             html.Div(id='wordcloud-container', className='wordcloud-container')
-        ], style={'display': 'flex'})
+        ], style={'width': '50%', 'float': 'left'}),
+        html.Div([
+            html.Div([
+                html.H6('Choose the brands to compare:'),
+                dcc.Dropdown(
+                    id='brand-dropdown',
+                    options=[{'label': brand, 'value': brand} for brand in all_brands],
+                    multi=True,
+                    value=brands_filter,  # Set default to brands_filter
+                    clearable=False,
+                    persistence=True,
+                    persistence_type='local'
+                ),
+                html.H6('Select which graph you would like to see:'),
+                graph_dropdown
+            ], style={'margin-bottom': '20px'}),
+            html.Div(id='graph-content')  # Placeholder for graph content
+        ], style={'width': '50%', 'float': 'right'}),
     ]),
     html.Div([
-        html.H4('Mean HP by Brand'),
-        dcc.Graph(id='mean-hp-graph', figure=fig5)
-    ]),
-    html.Div([
-        html.H4('Power vs Displacement'),
-        dcc.Dropdown(id='fuel-dropdown', options=fuel_options, value='Gasoline', clearable=False),
-        dcc.Graph(id='power-displacement-graph', figure=generate_power_displacement_graph(brands_filter, 'Gasoline'))
-    ]),
+        html.H4('Top Manufacturers Along the Years'),
+        dcc.Graph(id="graph2", figure=fig2)
+    ], style={'clear': 'both', 'text-align': 'center', 'height': '300px', 'margin-top': '20px'}),
 ])
+
+
+
+# Update callback for graph content
+@callback(
+    Output('graph-content', 'children'),
+    [Input('graph-dropdown', 'value')]
+)
+def update_graph_content(selected_graph):
+    if selected_graph == 'top_speed':
+        return dcc.Graph(id="graph1", figure=fig1)
+    elif selected_graph == 'mean_hp':
+        return dcc.Graph(id='mean-hp-graph', figure=fig5)
+    elif selected_graph == 'power_displacement':
+        return html.Div([
+            html.H6('Choose the Fuel you would like to Analyse:'),
+            dcc.Dropdown(id='fuel-dropdown', options=fuel_options, value='Gasoline', clearable=False),
+            dcc.Graph(id='power-displacement-graph', figure=generate_power_displacement_graph(brands_filter, 'Gasoline'))
+        ])
+
 
 # Callbacks
 @callback(
     Output('wordcloud-container', 'children'),
     [Input('choropleth-map', 'clickData')]
 )
-
 def update_wordcloud(clickData):
     if clickData:
-        country = clickData['points'][0]['hovertext']
-        manufacturers = countries[countries['Country'] == country]['Company'].tolist()
-        if manufacturers:
-            text = ' '.join(manufacturers)
-            wordcloud = WordCloud(width=800, height=400, colormap='RdBu', background_color='white', font_path=aspira_font_path).generate(text)
-            fig = make_subplots(rows=1, cols=1)
-            fig.add_trace(go.Image(z=wordcloud.to_array(), hoverinfo='skip'), row=1, col=1)
-            fig.update_layout(
-                margin=dict(l=0, r=0, t=0, b=0),
-                height=400,
-                width=800,
-                showlegend=False,
-                xaxis=dict(
-                    tickvals=[],  # Hide tick values on x-axis
-                    ticktext=[]   # Hide tick labels on x-axis
-                ),
-                yaxis=dict(
-                    tickvals=[],  # Hide tick values on y-axis
-                    ticktext=[]   # Hide tick labels on y-axis
-                )
-            )
-            return dcc.Graph(figure=fig)
+        try:
+            country = clickData['points'][0]['location']
+            manufacturers = countries[countries['Country'] == country]['Company'].tolist()
+            if manufacturers:
+                # Create a dictionary to store the frequency of series for each company
+                series_freq = {}
+                for manufacturer in manufacturers:
+                    series_freq[manufacturer] = cars[cars['Company'] == manufacturer]['Serie'].nunique()
 
+                # Generate word cloud with varying sizes based on the frequency of series
+                wordcloud = WordCloud(width=700, height=200, colormap='RdBu', background_color='white', font_path=aspira_font_path)
+                wordcloud_data = {manufacturer: freq for manufacturer, freq in series_freq.items()}
+                wordcloud.generate_from_frequencies(wordcloud_data)
+
+                # Create the word cloud figure
+                fig = make_subplots(rows=1, cols=1)
+                fig.add_trace(go.Image(z=wordcloud.to_array(), hoverinfo='skip'), row=1, col=1)
+                fig.update_layout(
+                    margin=dict(l=0, r=0, t=0, b=0),
+                    height=200,
+                    width=700,
+                    showlegend=False,
+                    xaxis=dict(tickvals=[], ticktext=[]),
+                    yaxis=dict(tickvals=[], ticktext=[])
+                )
+                return dcc.Graph(figure=fig)
+        except Exception as e:
+            print("An error occurred:", e)
+    
     return html.Div()
 
-# Callbacks
+
+
 @callback(
-    [Output('graph1', 'figure'),
-     Output('mean-hp-graph', 'figure')],
+    Output('graph6', 'figure'),
+    [Input('brand-dropdown', 'value'),
+     Input('fuel-dropdown', 'value')]
+)
+def update_power_displacement(selected_brands, selected_fuel):
+    return generate_power_displacement_graph(selected_brands, selected_fuel)
+
+# Update Mean HP by Brand callback
+@callback(
+    Output('mean-hp-graph', 'figure'),
     [Input('brand-dropdown', 'value')]
 )
-def update_graph(selected_brands):
-    if selected_brands is None or len(selected_brands) == 0:
-        # If no brands selected, return empty figure
-        return go.Figure(), go.Figure()
+def update_mean_hp_graph(selected_brands):
+    # Filter data based on selected brands
+    filtered_evolution_power = evolution_power_per_brand[evolution_power_per_brand['Company'].isin(selected_brands)]
+    # Create the figure
+    fig_mean_hp = px.line(filtered_evolution_power,
+                          x='Year',
+                          y='Mean HP',
+                          color='Company',
+                          height=400,
+                          color_discrete_sequence=line_colors
+                          )
+    fig_mean_hp.update_traces(line=dict(width=4))
+    fig_mean_hp.update_layout(xaxis_title='Year',
+                              yaxis_title='Mean HP',
+                              xaxis=dict(range=[1920, 2024]),
+                              xaxis_rangeslider_visible=True,
+                              font=dict(family='Aspira')
+                              )
+    return fig_mean_hp
 
-    # Filter the dataframe based on selected brands
+# Update Power vs Displacement callback
+@callback(
+    Output('power-displacement-graph', 'figure'),
+    [Input('brand-dropdown', 'value'),
+     Input('fuel-dropdown', 'value')]
+)
+def update_power_displacement_graph(selected_brands, selected_fuel):
+    # Filter data based on selected brands and fuel type
+    return generate_power_displacement_graph(selected_brands, selected_fuel)
+
+# Update Top Speed Evolution by Year and Brand callback
+@callback(
+    Output('graph1', 'figure'),
+    [Input('brand-dropdown', 'value')]
+)
+def update_top_speed_evolution(selected_brands):
+    # Filter data based on selected brands
     filtered_data = evolution_top_speed[evolution_top_speed['Company'].isin(selected_brands)]
-
-    # Update fig1 (Top Speed Evolution by Year and Brand)
+    # Create the figure
     updated_fig1 = go.Figure()
     for brand, color in zip(filtered_data['Company'].unique(), line_colors):
         data = filtered_data[filtered_data['Company'] == brand]
@@ -289,30 +358,6 @@ def update_graph(selected_brands):
         xaxis_rangeslider_visible=True,
         height=400,
     )
+    return updated_fig1
 
-    # Update fig5 (Mean HP by Brand)
-    filtered_evolution_power = evolution_power_per_brand[evolution_power_per_brand['Company'].isin(selected_brands)]
-    updated_fig5 = px.line(filtered_evolution_power,
-                           x='Year',
-                           y='Mean HP',
-                           title='Mean HP by brand',
-                           color='Company',
-                           height=400,
-                           color_discrete_sequence=line_colors
-                           )
-    updated_fig5.update_traces(line=dict(width=4))
-    updated_fig5.update_layout(xaxis_title='Year',
-                               yaxis_title='Mean HP',
-                               title='Mean HP by brand',
-                               xaxis=dict(range=[1920, 2024]),
-                               xaxis_rangeslider_visible=True)
 
-    return updated_fig1, updated_fig5
-
-@callback(
-    Output('power-displacement-graph', 'figure'),
-    [Input('brand-dropdown', 'value'),
-     Input('fuel-dropdown', 'value')]
-)
-def update_power_displacement_graph(selected_brands, selected_fuel):
-    return generate_power_displacement_graph(selected_brands, selected_fuel)

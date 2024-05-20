@@ -11,7 +11,7 @@ dash.register_page(__name__, path='/')
 layout = html.Div(
     children=[
         # Include your navbar or sidebar component here (if applicable)
-        html.Div(className='content',  # Main content area
+        html.Div(className='home',  # Main content area
             style={'display': 'flex', 'justify-content': 'center', 'align-items': 'center'},
             children=[
                 html.Img(src='./assets/components/Logo.png', className='big-logo')
