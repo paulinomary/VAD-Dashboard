@@ -35,7 +35,7 @@ layout = html.Div(
                                     html.Img(src='./assets/components/git-logo.png', className='github-logo'),
                                 ]),
                             ]),
-                            html.P(' '),
+                            html.P('   '),
                             html.P(''),
                         ]),
                         

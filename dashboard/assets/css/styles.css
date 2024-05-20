@@ -80,6 +80,7 @@
   transition: transform 0.5s ease;
   position: relative;
   background-color: #F9D29F;
+  margin-top: auto;
 }
 
 .img-Alex {
@@ -89,6 +90,7 @@
   transition: transform 0.5s ease;
   position: flex;
   background-color: #F9D29F;
+  margin-top: auto;
 }
 
 .img-Mariana, .img-Alex {
@@ -98,11 +100,18 @@
 .img-Alex:hover, .img-Mariana:hover {
 }
 
-.front-Alex, .front-Mary {
+.front-Mary {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: 20vh;
+  position: relative;
+}
 
+.front-Alex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   position: relative;
 }
 
@@ -181,9 +190,9 @@ p {
   font-family: 'Aspira';
   font-size: 1rem;
   text-align: center;
-  padding: 0.5vh;
   max-width: 90%;
-  margin: auto;
+  margin-top: -10vh;
+
 }
 
 #brand-dropdown {
