@@ -98,8 +98,8 @@ def generate_radar_charts(cars_data, max_charts=100):
         car_data = cars_data.iloc[i]
         name = car_data['Name']
         metrics = car_data[['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist()
-        chart = dcc.Graph(figure=make_radar_chart(name, metrics, ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']))
-        charts.append(html.Div(chart, style={'display': 'inline-block', 'width': '30%'}))
+        chart = dcc.Graph(figure=make_radar_chart(name, metrics, ['HP', 'Unladen Weight (kg)', 'Acceleration (0-100 kph)']))
+        charts.append(html.Div(chart, style={'display': 'inline-block', 'width': '20%'}))
     return html.Div(charts, style={'display': 'flex', 'flex-wrap': 'wrap'})
 
 
@@ -298,7 +298,6 @@ def update_scatter(restyleData, years):
     # Create a scatter plot based on the filtered 
     #print(filtered_cars)
     scatter_fig = px.scatter(filtered_cars, x='HP', y='Displacement', color='Company')
-    radar_chart = make_radar_chart(all_cars_norm['Name'].iloc[0], all_cars_norm.iloc[0][['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)']].values.flatten().tolist(), ['HP', 'Unladen Weight (kg)', 'Acceleration 0-62 Mph (0-100 kph)'])
     return scatter_fig
 
 
